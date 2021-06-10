@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>Current COVID cases of Country</title>
+</head>
+
+<body>
+    <div>
+        {% if messages %}
+        <div class="alert alert-warning" role="alert" id="msg">
+            {% for msg in messages %} {{msg}} {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <div class="shadow  mt-3 p-3 mb-5 bg-body rounded text-center text-success">
+            <h3>CURRENT COVID CASES OF COUNTRY</h3>
+        </div>
+        <form class="row g-2" action="/show?loc = {{ loc }}" method="get">
+            {% csrf_token %}
+            <div class="col-md-12">
+                <label for="inputID" class="form-label">Enter The Country Name</label>
+                <input type="text" class="form-control" id="inputID" name="loc" placeholder="Enter the country" required>
+            </div>
+            <div class="col-2 mt-4  d-grid mx-auto">
+                <button type="submit" id="addBtn" class="btn btn-primary">Show data</button>
+            </div>
+        </form>
+        <div class="shadow mt-3 p-2 mb-2 bg-body rounded text-center text-success">
+            <h4>Covid-19 Information</h4>
+        </div>
+        <div class="card mb-3" id="info" style="max-width: auto;">
+        </div>
+    </div>
+    </div>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+
+
+
+
+    <script>
+        //To remove the massage popup in specific time interval
+        setTimeout(function() {
+            if ($('#msg').length > 0) {
+                $('#msg').remove();
+            }
+        }, 3000);
+    </script>
+    <script>
+        window.addEventListener('load', displayInfo);
+        let addBtn = document.getElementById("addBtn");
+        addBtn.addEventListener('click', displayInfo);
+
+
+        //To display the corona data
+        function displayInfo() {
+            let html = "";
+            let data = JSON.parse("{{data|escapejs}}");
+            //console.log(data);
+            html += `<div class="row g-0">
+  <div class="row g-0">
+    <div class="col-md-12">
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+
+      <th scope="col">Country</th>
+      <th scope="col">Total Confirmed Case</th>
+      <th scope="col">Total Recovered</th>
+      <th scope="col">Total Death</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <td>${data['county']}</td>
+      <td>${ data['totalConfirmedCase'] }</td>
+      <td>${ data['TotalRecovered'] }</td>
+      <td>${ data['TotalDeaths'] }</td>
+      <td>${ data['date_time'] }</td>
+    </tr>
+
+      </tbody>
+</table>
+    </div>
+  </div>`
+            let infoElm = document.getElementById("info");
+            infoElm.innerHTML = html;
+            //console.log("This code is run already")
+        }
+    </script>
+
+</body>
+
+</html>
